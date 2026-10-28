@@ -1,0 +1,39 @@
+package tn.esprit.autoloc.entity;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class Client {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long idClient;
+
+    private String nom;
+    private String prenom;
+    private String email;
+    private String telephone;
+    private String numPermis;
+    private LocalDate dateInscription;
+
+    // Cote inverse - cascade PERSIST : enregistrer un client enregistre ses nouvelles reservations.
+    @OneToMany(mappedBy = "client", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    private List<Reservation> reservations = new ArrayList<>();
+
+    public void addReservation(Reservation reservation) {
+        reservations.add(reservation);
+        reservation.setClient(this);
+    }
+}
